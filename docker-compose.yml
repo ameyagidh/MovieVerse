@@ -1,0 +1,20 @@
+version: "3.9"
+
+services:
+  mongo:
+    image: mongo:7
+    container_name: movieverse-mongo
+    # Host port 27020 — 27017/18/19 are pulseboard/openshelf/quakescope, so
+    # all four repos' Mongo containers can run at once without a clash.
+    ports:
+      - "27020:27017"
+    volumes:
+      - movieverse-mongo-data:/data/db
+    healthcheck:
+      test: echo 'db.runCommand("ping").ok' | mongosh --quiet
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  movieverse-mongo-data:
